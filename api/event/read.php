@@ -21,13 +21,13 @@
 
     // Check if any events
     if ($num > 0) {
-        $posts_arr = array();
-        $posts_arr['data'] = array();
+        $events_arr = array();
+        $events_arr['data'] = array();
 
         while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
             extract($row);
 
-            $post_item = array(
+            $event_item = array(
                 'id' => $id,
                 'name' => $name,
                 'descr' => $descr,
@@ -49,10 +49,10 @@
             );
 
             // Push to "Data"
-            array_push($posts_arr['data'], $post_item);
+            array_push($events_arr['data'], $event_item);
 
             // Turn to JSON
-            echo json_encode($posts_arr);
+            echo json_encode($events_arr);
         }
 
     } else {
