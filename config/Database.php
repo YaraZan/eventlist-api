@@ -4,7 +4,7 @@ class Database {
     private $host = 'localhost';
     private $db_name = 'eventlist';
     private $username = 'root';
-    private $pass = '1234';
+    private $pass = '';
     private $conn;
 
     //DB connection
@@ -17,6 +17,8 @@ class Database {
         } catch (PDOException $e) {
             echo 'Connection error: ' . $e->getMessage();
         }
+
+        return $this->conn;
     }
 
 

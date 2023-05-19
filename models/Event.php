@@ -57,15 +57,15 @@
                         e.date_end,
                         e.created_at
                     FROM 
-                        ' . $this->table . ' p
+                        ' . $this->table . ' e
                     LEFT JOIN
                         ev_types t ON e.type = t.id,
                         ev_kinds k ON e.kind = k.id,
                         ev_levels l ON e.level = l.id,
                         users u ON e.organisator = u.id,
-                        organisations o ON e.organisation = o.id,
+                        organisations o ON e.organisation = o.id
                     ORDER BY
-                        e.created_at DESC'
+                        e.created_at DESC';
 
             // Prepare statement
             $stmt = $this->conn->prepare($query);

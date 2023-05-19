@@ -14,7 +14,7 @@
     $event = new Event($db);
 
     // Event query
-    $result = $post->read();
+    $result = $event->read();
 
     // Get row count
     $num = $result->rowCount();
@@ -52,14 +52,12 @@
             array_push($posts_arr['data'], $post_item);
 
             // Turn to JSON
-            echo ison_encode($posts_arr)
+            echo ison_encode($posts_arr);
         }
 
     } else {
         echo ison_encode(
-            array(
-                'message' => 'No events found'
-            )
-        )
+            array('message' => 'No events found')
+        );
     }
 ?>
