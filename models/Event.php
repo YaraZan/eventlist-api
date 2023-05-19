@@ -41,8 +41,8 @@
                         e.id,
                         e.name,
                         e.descr,
-                        e.creator;
-                        e.organisation;
+                        e.creator,
+                        e.organisation,
                         e.type,
                         e.kind,
                         e.level,
@@ -58,12 +58,11 @@
                         e.created_at
                     FROM 
                         ' . $this->table . ' e
-                    LEFT JOIN
-                        ev_types t ON e.type = t.id,
-                        ev_kinds k ON e.kind = k.id,
-                        ev_levels l ON e.level = l.id,
-                        users u ON e.organisator = u.id,
-                        organisations o ON e.organisation = o.id
+                    LEFT JOIN ev_types t ON e.type = t.id
+                    LEFT JOIN ev_kinds k ON e.kind = k.id
+                    LEFT JOIN ev_levels l ON e.level = l.id
+                    LEFT JOIN users u ON e.creator = u.id
+                    LEFT JOIN organisations o ON e.organisation = o.id
                     ORDER BY
                         e.created_at DESC';
 

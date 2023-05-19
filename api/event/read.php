@@ -52,11 +52,11 @@
             array_push($posts_arr['data'], $post_item);
 
             // Turn to JSON
-            echo ison_encode($posts_arr);
+            echo json_encode($posts_arr);
         }
 
     } else {
-        echo ison_encode(
+        echo json_encode(
             array('message' => 'No events found')
         );
     }
