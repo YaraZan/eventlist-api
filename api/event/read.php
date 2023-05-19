@@ -25,10 +25,41 @@
         $posts_arr['data'] = array();
 
         while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
-            $row['title']
+            extract($row);
+
+            $post_item = array(
+                'id' => $id,
+                'name' => $name,
+                'descr' => $descr,
+                'creator' => $creator,
+                'organisation' => $organisation,
+                'kind' => $kind,
+                'type' => $type,
+                'level' => $level,
+                'sign_deadline' => $sign_deadline,
+                'place' => $place,
+                'isArchieved' => $isArchieved,
+                'isPrivate' => $isPrivate,
+                'isPassed' => $isPassed,
+                'access_code' => $access_code,
+                'max_people' => $max_people,
+                'date_start' => $date_start,
+                'date_end' => $date_end,
+                'created_at' => $created_at
+            );
+
+            // Push to "Data"
+            array_push($posts_arr['data'], $post_item);
+
+            // Turn to JSON
+            echo ison_encode($posts_arr)
         }
 
     } else {
-
+        echo ison_encode(
+            array(
+                'message' => 'No events found'
+            )
+        )
     }
 ?>
