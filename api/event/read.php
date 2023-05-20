@@ -50,10 +50,10 @@
 
             // Push to "Data"
             array_push($events_arr['data'], $event_item);
-
-            // Turn to JSON
-            echo json_encode($events_arr);
         }
+
+        // Turn to JSON
+        echo json_encode($events_arr);
 
     } else {
         echo json_encode(
