@@ -141,5 +141,72 @@
             $this->date_end = $row['date_end'];
             $this->created_at = $row['created_at'];
         }
+
+        // Create Event
+        public function create() {
+            // Create query
+            $query = 'INSERT INTO ' . $this->table . '
+                SET 
+                    name = :name,
+                    descr = :descr,
+                    creator = :creator,
+                    organisation = :organisation,
+                    kind = :kind,
+                    type = :type,
+                    level = :level,
+                    sign_deadline = :sign_deadline,
+                    place = :place,
+                    isPrivate = :isPrivate,
+                    access_code = :access_code,
+                    max_people = :max_people,
+                    date_start = :date_start,
+                    date_end = :date_end
+            ';
+
+            // Prepare statement
+            $stmt = $this->conn->prepare($query);
+
+            // Clean data
+            $this->name = htmlspecialchars(strip_tags($this->name));
+            $this->descr = htmlspecialchars(strip_tags($this->descr));
+            $this->creator = htmlspecialchars(strip_tags($this->creator));
+            $this->organisation = htmlspecialchars(strip_tags($this->organisation));
+            $this->kind = htmlspecialchars(strip_tags($this->kind));
+            $this->type = htmlspecialchars(strip_tags($this->type));
+            $this->level = htmlspecialchars(strip_tags($this->level));
+            $this->sign_deadline = htmlspecialchars(strip_tags($this->sign_deadline));
+            $this->place = htmlspecialchars(strip_tags($this->place));
+            $this->isPrivate = htmlspecialchars(strip_tags($this->isPrivate));
+            $this->access_code = htmlspecialchars(strip_tags($this->access_code));
+            $this->max_people = htmlspecialchars(strip_tags($this->max_people));
+            $this->date_start = htmlspecialchars(strip_tags($this->date_start));
+            $this->date_end = htmlspecialchars(strip_tags($this->date_end));
+
+            // Bind data
+            $stmt->bindParam(':name', $this->name);
+            $stmt->bindParam(':descr', $this->descr);
+            $stmt->bindParam(':creator', $this->creator);
+            $stmt->bindParam(':organisation', $this->organisation);
+            $stmt->bindParam(':kind', $this->kind);
+            $stmt->bindParam(':type', $this->type);
+            $stmt->bindParam(':level', $this->level);
+            $stmt->bindParam(':sign_deadline', $this->sign_deadline);
+            $stmt->bindParam(':place', $this->place);
+            $stmt->bindParam(':isPrivate', $this->isPrivate);
+            $stmt->bindParam(':access_code', $this->access_code);
+            $stmt->bindParam(':max_people', $this->max_people);
+            $stmt->bindParam(':date_start', $this->date_start);
+            $stmt->bindParam(':date_end', $this->date_end);
+
+            // Execute query
+            if($stmt->execute()) {
+                return true;
+            }
+
+            // Print error if something goes wrong
+            printf("Error: %s.\n", $stmt->error);
+
+            return false;
+        }
     }
 ?>
