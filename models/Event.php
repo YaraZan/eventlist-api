@@ -304,5 +304,32 @@
             return false;
         }
 
+
+        // Get Creator name by id
+        public function creator_name() {
+            // Create query
+            $query = 'SELECT name FROM users WHERE id = :id';
+        
+            // Prepare statement
+            $stmt = $this->conn->prepare($query);
+        
+            // Clean data
+            $this->id = htmlspecialchars(strip_tags($this->id));
+        
+            // Bind data
+            $stmt->bindParam(':id', $this->id);
+        
+            // Execute query
+            if ($stmt->execute()) {
+                return $stmt;
+            } else {
+                // Print error if something goes wrong
+                printf("Error: %s.\n", $stmt->error);
+        
+                return null;
+            }
+        }
+        
+
     }
 ?>
