@@ -60,4 +60,13 @@
         );
     }
 
-    // If email doesnt exist or 
+    // If email doesnt exist or password doesnt match, tell user he cant login
+    else {
+        
+        // Responce code
+        http_response_code(401);
+
+        echo json_encode(
+            array("message" => "Ошибка входа",)
+        );
+    }
