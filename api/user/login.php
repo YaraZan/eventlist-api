@@ -24,9 +24,40 @@
     $email_exists = $user->email_exists();
 
     // Connecting JWT files
-    include_once "config/core.php";
-    include_once "libs/php-jwt/BeforeValidException.php";
-    include_once "libs/php-jwt/ExpiredException.php";
-    include_once "libs/php-jwt/SignatureInvalidException.php";
-    include_once "libs/php-jwt/JWT.php";
+    include_once "../../config/Core.php";
+    include_once "../../libs/php-jwt/src/BeforeValidException.php";
+    include_once "../../libs/php-jwt/src/ExpiredException.php";
+    include_once "../../libs/php-jwt/src/SignatureInvalidException.php";
+    include_once "../../libs/php-jwt/src/JWT.php";
     use \Firebase\JWT\JWT;
+
+    // Check if email exists and passwod matches
+    if ($email_exists && password_verify($data->password, $user->password)) {
+
+        $token = array(
+            "iss" => $iss,
+            "aud" => $aud,
+            "iat" => $iat,
+            "nbf" => $nbf,
+            "data" => array(
+                "id" => $user->id,
+                "name" => $user->name,
+                "email" => $user->email,
+                "password" => $user->password
+            )
+        );
+
+        // Responce code
+        http_response_code(200);
+
+        // Creating a JWT
+        $jwt = JWT::encode($token, $key, 'HS256');
+        echo json_encode(
+            array(
+                "message" => "Успешный вход в систему",
+                "jwt" => $jwt
+            )
+        );
+    }
+
+    // If email doesnt exist or 
