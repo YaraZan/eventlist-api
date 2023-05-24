@@ -9,7 +9,6 @@
         public $name;
         public $email;
         public $password;
-        public $role;
 
         // Constructor with DB
         public function __construct($db) {
@@ -124,6 +123,51 @@
             }
 
             // Return false if not
+            return false;
+        }
+
+        // Update user
+        public function update() {
+
+            // If in html form was entered password (must change the password)
+            $password_set=!empty($this->password) ? ", password = :password" : "";
+
+            // If password is not set - dont change password
+            $query = "UPDATE " . $this->table . "
+                SET 
+                    name = :name,
+                    email = :email
+                    {$password_set}
+                WHERE
+                    id = :id";
+
+            // Prepare statement
+            $stmt = $this->conn->prepare($query);
+
+            // Inject 
+            $this->name = htmlspecialchars(strip_tags($this->name));
+            $this->email = htmlspecialchars(strip_tags($this->email));
+            $this->id = htmlspecialchars(strip_tags($this->id));
+
+            // Bind params
+            $stmt->bindParam(":name", $this->name);
+            $stmt->bindParam(":email", $this->email);
+
+            // Method password_hash() for defending user in database
+            if (!empty($this->password)) {
+                $this->password=htmlspecialchars(strip_tags($this->password));
+                $password_hash = password_hash($this->password, PASSWORD_BCRYPT);
+                $stmt->bindParam(":password", $password_hash);
+            }
+
+            // Unique id for user
+            $stmt->bindParam(":id", $this->id);
+
+            // 
+            if($stmt->execute()) {
+                return true;
+            }
+
             return false;
         }
     }
