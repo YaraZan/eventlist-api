@@ -19,6 +19,9 @@
     // Get user
     $user->read_single();
 
+    // Set user permissions
+    $user->set_permissions();
+
     // Create array
     $user_item = array(
         'id' => $user->id,
@@ -27,6 +30,8 @@
         'password' => $user->password,
         'role' => $user->role
     );
+
+
 
     // Make json
     print_r(json_encode($user_item));
