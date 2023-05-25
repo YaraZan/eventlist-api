@@ -24,7 +24,6 @@
             u.id,
             u.name,
             u.email,
-            u.password,
             u.role
             FROM 
                 ' . $this->table . ' u
@@ -46,8 +45,7 @@
 
             $this->id = $row['id'];
             $this->name = $row['name'];
-            $this->login = $row['login'];
-            $this->password = $row['password'];
+            $this->email = $row['email'];
             $this->role_id = $row['role'];        
         }
 
@@ -200,7 +198,7 @@
                 "id" => $row['id'],
                 "name" => $row['name'],
                 "permissions" => $row["permissions"]
-            )
+            );
 
         }
     }

@@ -26,8 +26,7 @@
     $user_item = array(
         'id' => $user->id,
         'name' => $user->name,
-        'login' => $user->login,
-        'password' => $user->password,
+        'email' => $user->email,
         'role' => $user->role
     );
 
