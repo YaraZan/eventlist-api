@@ -9,6 +9,8 @@
         public $name;
         public $email;
         public $password;
+        public $role_id;
+        public $role;
 
         // Constructor with DB
         public function __construct($db) {
@@ -21,7 +23,7 @@
             r.name as role_name,
             u.id,
             u.name,
-            u.login,
+            u.email,
             u.password,
             u.role
             FROM 
@@ -46,7 +48,7 @@
             $this->name = $row['name'];
             $this->login = $row['login'];
             $this->password = $row['password'];
-            $this->role = $row['role'];        
+            $this->role_id = $row['role'];        
         }
 
         // Creating user
@@ -56,7 +58,8 @@
             SET
                 name = :name,
                 email = :email,
-                password = :password";
+                password = :password,
+                role = 5";
 
             // Prepare statement
             $stmt = $this->conn->prepare($query);
@@ -86,7 +89,7 @@
         public function email_exists() {
 
             // Query to check if email exists
-            $query = "SELECT id, name, email, password 
+            $query = "SELECT * 
                 FROM " . $this->table . "
                     WHERE email = ?
                     LIMIT 0,1";
@@ -117,6 +120,10 @@
                 $this->name = $row["name"];
                 $this->email = $row["email"];
                 $this->password = $row["password"];
+                $this->role_id = $row["role"];
+
+                // Set user permissions
+                $this->set_permissions();
 
                 // Return true if exists
                 return true;
@@ -169,6 +176,32 @@
             }
 
             return false;
+        }
+
+        public function set_permissions() {
+            // Create query 
+            $query = "SELECT * FROM usr_roles 
+                WHERE 
+                    id = ?
+                LIMIT 0,1";
+
+            // Prepare statement
+            $stmt = $this->conn->prepare($query);
+
+            // Bind ID
+            $stmt->bindParam(1, $this->role_id);
+            
+            // Execute query 
+            $stmt->execute();
+
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            $this->role = array(
+                "id" => $row['id'],
+                "name" => $row['name'],
+                "permissions" => $row["permissions"]
+            )
+
         }
     }
 ?>
