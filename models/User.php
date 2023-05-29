@@ -9,7 +9,6 @@
         public $name;
         public $email;
         public $password;
-        public $role_id;
         public $role;
 
         // Constructor with DB
@@ -46,7 +45,7 @@
             $this->id = $row['id'];
             $this->name = $row['name'];
             $this->email = $row['email'];
-            $this->role_id = $row['role'];        
+            $this->role = $row['role'];        
         }
 
         // Creating user
@@ -57,7 +56,7 @@
                 name = :name,
                 email = :email,
                 password = :password,
-                role = 5";
+                role = 1";
 
             // Prepare statement
             $stmt = $this->conn->prepare($query);
@@ -118,10 +117,7 @@
                 $this->name = $row["name"];
                 $this->email = $row["email"];
                 $this->password = $row["password"];
-                $this->role_id = $row["role"];
-
-                // Set user permissions
-                $this->set_permissions();
+                $this->role = $row["role"];
 
                 // Return true if exists
                 return true;
@@ -174,32 +170,6 @@
             }
 
             return false;
-        }
-
-        public function set_permissions() {
-            // Create query 
-            $query = "SELECT * FROM usr_roles 
-                WHERE 
-                    id = ?
-                LIMIT 0,1";
-
-            // Prepare statement
-            $stmt = $this->conn->prepare($query);
-
-            // Bind ID
-            $stmt->bindParam(1, $this->role_id);
-            
-            // Execute query 
-            $stmt->execute();
-
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            $this->role = array(
-                "id" => $row['id'],
-                "name" => $row['name'],
-                "permissions" => $row["permissions"]
-            );
-
         }
     }
 ?>
