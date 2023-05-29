@@ -1,10 +1,18 @@
 <?php
     // Headers
     header('Access-Control-Allow-Origin: *');
+    header('Access-Control-Allow-Credentials: true');
     header('Content-Type: application/json');
     header('Access-Control-Allow-Methods: POST');
-    header("Access-Control-Max-Age: 3600");
-    header('Access-Control-Allow-Headers: Access-Control-Allow-Headers, Content-Type, Access-Control-Allow-Methods, Authorization, X-Requested-With');
+    header('Access-Control-Allow-Headers: *');
+
+    if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+        header('Access-Control-Allow-Origin: *');
+        header('Access-Control-Allow-Methods: POST');
+        header('Content-Type: application/json');
+        header('Access-Control-Allow-Headers: *');
+        exit();
+    }
 
     // Connecting JWT files
     include_once "../../config/Core.php";
@@ -20,7 +28,7 @@
     $data = json_decode(file_get_contents("php://input"));
 
     // Get a JWT 
-    $jwt = isset($data->jwt) ? $data->jwt : "";
+    $jwt = isset($data->token) ? $data->token : "";
 
     // if jwt is not null
     if ($jwt) {

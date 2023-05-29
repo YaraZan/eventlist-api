@@ -4,11 +4,12 @@
     header('Access-Control-Allow-Credentials: true');
     header('Content-Type: application/json');
     header('Access-Control-Allow-Methods: POST');
-    header('Access-Control-Allow-Headers: Access-Control-Allow-Headers, Content-Type, Access-Control-Allow-Methods, Authorization, X-Requested-With');
+    header('Access-Control-Allow-Headers: *');
 
     if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-        header('Access-Control-Allow-Origin: http://localhost:8080');
+        header('Access-Control-Allow-Origin: *');
         header('Access-Control-Allow-Methods: POST');
+        header('Content-Type: application/json');
         header('Access-Control-Allow-Headers: *');
         exit();
     }
@@ -40,14 +41,14 @@
         $user->create()
     ) {
         //Set responce code
-        http_response_code(200);
+        header("HTTP/1.1 200 OK");
 
         // Show message
         echo json_encode(array("message" => "Пользователь был создан"));
     }
     else {
         //Set responce code
-        http_response_code(400);
+        header("HTTP/1.1 400 Error");
 
         // Show message
         echo json_encode(array("message" => "Невозможно создать пользователя"));
