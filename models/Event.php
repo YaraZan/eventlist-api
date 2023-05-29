@@ -331,5 +331,56 @@
         }
         
 
+        // Get Events by organisation
+        public function read_by_organisation() {
+            // Create query
+            $query = 'SELECT
+                        t.name as type_name,
+                        k.name as kind_name,
+                        l.name as level_name,
+                        u.name as creator_name,
+                        o.name as organisation_name,
+                        e.id,
+                        e.name,
+                        e.descr,
+                        e.creator,
+                        e.organisation,
+                        e.type,
+                        e.kind,
+                        e.level,
+                        e.sign_deadline,
+                        e.place,
+                        e.isArchieved,
+                        e.isPrivate,
+                        e.isPassed,
+                        e.access_code,
+                        e.max_people,
+                        e.date_start,
+                        e.date_end,
+                        e.created_at
+                    FROM 
+                        ' . $this->table . ' e
+                    LEFT JOIN ev_types t ON e.type = t.id
+                    LEFT JOIN ev_kinds k ON e.kind = k.id
+                    LEFT JOIN ev_levels l ON e.level = l.id
+                    LEFT JOIN users u ON e.creator = u.id
+                    LEFT JOIN organisations o ON e.organisation = o.id
+                    WHERE
+                        e.organisation = ?
+                    ORDER BY
+                        e.created_at DESC';
+
+            // Prepare statement
+            $stmt = $this->conn->prepare($query);
+
+            // Bind ID
+            $stmt->bindParam(1, $this->organisation);
+
+            // Execute query 
+            $stmt->execute();
+
+            return $stmt;
+        }
+        
     }
 ?>
