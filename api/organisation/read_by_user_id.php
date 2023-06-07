@@ -1,7 +1,18 @@
 <?php
     // Headers
     header('Access-Control-Allow-Origin: *');
+    header('Access-Control-Allow-Credentials: true');
     header('Content-Type: application/json');
+    header('Access-Control-Allow-Methods: POST');
+    header('Access-Control-Allow-Headers: *');
+
+    if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+        header('Access-Control-Allow-Origin: *');
+        header('Access-Control-Allow-Methods: POST');
+        header('Content-Type: application/json');
+        header('Access-Control-Allow-Headers: *');
+        exit();
+    }
 
     include_once '../../config/Database.php';
     include_once '../../models/Organisation.php';
@@ -11,10 +22,14 @@
     $db = $database->connect();
 
     // Instantinate event object
-    $org = new Organisation($db);
+    $organisation = new Organisation($db);
+
+    $data = json_decode(file_get_contents("php://input"));
+
+    $organisation->creator = $data->creator;
 
     // Event query
-    $result = $org->read();
+    $result = $organisation->read_by_user_id();
 
     // Get row count
     $num = $result->rowCount();
@@ -37,7 +52,7 @@
                 'level' => $level,
                 'type' => $type,
                 'location' => $location,
-                'max_people' => $max_people
+                'max_people' => $max_people,
             );
 
             // Push to "Data"
