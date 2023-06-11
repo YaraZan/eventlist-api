@@ -14,14 +14,14 @@
     $user = new User($db);
 
     // Get ID
-    $user->id = isset($_GET['id']) ? $_GET['id'] : die();
+    $user->public_id = isset($_GET['public_id']) ? $_GET['public_id'] : die();
 
     // Get user
     $user->read_single();
 
     // Create array
     $user_item = array(
-        'id' => $user->id,
+        'public_id' => $user->public_id,
         'name' => $user->name,
         'email' => $user->email,
         'role' => $user->role

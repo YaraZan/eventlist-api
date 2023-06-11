@@ -17,6 +17,9 @@
     include_once '../../config/Database.php';
     include_once '../../models/User.php';
 
+    require '../../vendor/autoload.php';
+    use Ramsey\Uuid\Uuid;
+
     // Instantiate DB & connect
     $database = new Database();
     $db = $database->connect();
@@ -27,7 +30,10 @@
     // Get raw posted data
     $data = json_decode(file_get_contents("php://input"));
 
+    $uuid = Uuid::uuid4();
+
     // Set values
+    $user->public_id = $uuid->toString();
     $user->name = $data->name;
     $user->email = $data->email;
     $user->password = $data->password;

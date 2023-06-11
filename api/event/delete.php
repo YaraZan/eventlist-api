@@ -19,7 +19,7 @@
     $data = json_decode(file_get_contents("php://input"));
 
     // Set id to delete 
-    $event->id = $data->id;
+    $event->public_id = $data->public_id;
 
     // Delete event
     if ($event->delete()) {

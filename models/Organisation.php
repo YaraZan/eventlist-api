@@ -6,6 +6,7 @@
 
         // Properties
         public $id;
+        public $public_id;
         public $creator;
         public $name;
         public $email;
@@ -29,7 +30,7 @@
                 l.name as level_name,
                 ty.name as type_name,
                 u.name as creator_name,
-                o.id,
+                o.public_id,
                 o.creator,
                 o.name,
                 o.email,
@@ -44,7 +45,7 @@
             LEFT JOIN org_levels l ON o.level = l.id
             LEFT JOIN org_targets ta ON o.target = ta.id
             LEFT JOIN org_types ty ON o.type = ty.id
-            LEFT JOIN users u ON o.creator = u.id
+            LEFT JOIN users u ON o.creator = u.public_id
             ORDER BY
                 o.created_at DESC';
 
@@ -64,7 +65,7 @@
                 l.name as level_name,
                 ty.name as type_name,
                 u.name as creator_name,
-                o.id,
+                o.public_id,
                 o.creator,
                 o.name,
                 o.email,
@@ -79,22 +80,23 @@
             LEFT JOIN org_levels l ON o.level = l.id
             LEFT JOIN org_targets ta ON o.target = ta.id
             LEFT JOIN org_types ty ON o.type = ty.id
-            LEFT JOIN users u ON o.creator = u.id
-            ORDER BY
-                o.created_at DESC';
+            LEFT JOIN users u ON o.creator = u.public_id
+            WHERE 
+                o.public_id = ?
+                LIMIT 0,1';
             
             // Prepare statement
             $stmt = $this->conn->prepare($query);
 
             // Bind ID
-            $stmt->bindParam(1, $this->id);
+            $stmt->bindParam(1, $this->public_id);
             
             // Execute query 
             $stmt->execute();
 
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             
-            $this->id = $row['id'];
+            $this->public_id = $row['public_id'];
             $this->creator = $row['creator'];
             $this->name = $row['name'];
             $this->email = $row['email'];
@@ -111,6 +113,7 @@
             // Create query
             $query = 'INSERT INTO ' . $this->table . '
                 SET
+                    public_id = :public_id,
                     creator = :creator,
                     name = :name,
                     email = :email,
@@ -126,6 +129,7 @@
             $stmt = $this->conn->prepare($query);
 
             // Clean data
+            $this->public_id = htmlspecialchars(strip_tags($this->public_id));
             $this->creator = htmlspecialchars(strip_tags($this->creator));
             $this->name = htmlspecialchars(strip_tags($this->name));
             $this->email = htmlspecialchars(strip_tags($this->email));
@@ -137,6 +141,7 @@
             $this->max_people = htmlspecialchars(strip_tags($this->max_people));
 
             // Bind data
+            $stmt->bindParam(':public_id', $this->public_id);
             $stmt->bindParam(':creator', $this->creator);
             $stmt->bindParam(':name', $this->name);
             $stmt->bindParam(':email', $this->email);
@@ -166,7 +171,7 @@
                 l.name as level_name,
                 ty.name as type_name,
                 u.name as creator_name,
-                o.id,
+                o.public_id,
                 o.creator,
                 o.name,
                 o.email,
@@ -181,7 +186,7 @@
             LEFT JOIN org_levels l ON o.level = l.id
             LEFT JOIN org_targets ta ON o.target = ta.id
             LEFT JOIN org_types ty ON o.type = ty.id
-            LEFT JOIN users u ON o.creator = u.id
+            LEFT JOIN users u ON o.creator = u.public_id
             WHERE
                 o.creator = ?
             ORDER BY

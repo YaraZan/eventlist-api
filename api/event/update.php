@@ -19,8 +19,7 @@
     $data = json_decode(file_get_contents("php://input"));
 
     // Set id to update 
-    $event->id = $data->id;
-
+    $event->public_id = $data->public_id;
     $event->name = $data->name;
     $event->descr = $data->descr;
     $event->creator = $data->creator;

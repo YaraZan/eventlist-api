@@ -16,6 +16,9 @@
 
     include_once '../../config/Database.php';
     include_once '../../models/Organisation.php';
+    
+    require '../../vendor/autoload.php';
+    use Ramsey\Uuid\Uuid;
 
     // Instantiate DB & connect
     $database = new Database();
@@ -27,7 +30,10 @@
     // Get raw posted data
     $data = json_decode(file_get_contents("php://input"));
 
+    $uuid = Uuid::uuid4();
+
     // Set values
+    $organisation->public_id = $uuid->toString();
     $organisation->creator = $data->creator;
     $organisation->name = $data->name;
     $organisation->email = $data->email;

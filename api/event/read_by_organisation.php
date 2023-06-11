@@ -43,7 +43,7 @@
             extract($row);
 
             $event_item = array(
-                'id' => $id,
+                'public_id' => $public_id,
                 'name' => $name,
                 'descr' => $descr,
                 'creator' => $creator,

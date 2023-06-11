@@ -6,6 +6,7 @@
 
         // Properties
         public $id;
+        public $public_id;
         public $name;
         public $email;
         public $password;
@@ -20,7 +21,7 @@
         public function read_single() {
             $query = 'SELECT
             r.name as role_name,
-            u.id,
+            u.public_id,
             u.name,
             u.email,
             u.role
@@ -28,21 +29,21 @@
                 ' . $this->table . ' u
             LEFT JOIN usr_roles r ON u.role = r.id
             WHERE 
-                u.id = ?
+                u.public_id = ?
                 LIMIT 0,1';
             
             // Prepare statement
             $stmt = $this->conn->prepare($query);
 
             // Bind ID
-            $stmt->bindParam(1, $this->id);
+            $stmt->bindParam(1, $this->public_id);
             
             // Execute query 
             $stmt->execute();
 
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            $this->id = $row['id'];
+            $this->public_id = $row['public_id'];
             $this->name = $row['name'];
             $this->email = $row['email'];
             $this->role = $row['role'];        
@@ -53,6 +54,7 @@
             // Query 
             $query = "INSERT INTO " . $this->table . "
             SET
+                public_id = :public_id,
                 name = :name,
                 email = :email,
                 password = :password,
@@ -62,11 +64,13 @@
             $stmt = $this->conn->prepare($query);
 
             // Inject 
+            $this->public_id = htmlspecialchars(strip_tags($this->public_id));
             $this->name = htmlspecialchars(strip_tags($this->name));
             $this->email = htmlspecialchars(strip_tags($this->email));
             $this->password = htmlspecialchars(strip_tags($this->password));
 
             // Bind params
+            $stmt->bindParam(":public_id", $this->public_id);
             $stmt->bindParam(":name", $this->name);
             $stmt->bindParam(":email", $this->email);
 
@@ -113,7 +117,7 @@
                 $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
                 // Set values to object attributes
-                $this->id = $row["id"];
+                $this->public_id = $row["public_id"];
                 $this->name = $row["name"];
                 $this->email = $row["email"];
                 $this->password = $row["password"];
@@ -140,15 +144,15 @@
                     email = :email
                     {$password_set}
                 WHERE
-                    id = :id";
+                    public_id = :public_id";
 
             // Prepare statement
             $stmt = $this->conn->prepare($query);
 
             // Inject 
+            $this->public_id = htmlspecialchars(strip_tags($this->public_id));
             $this->name = htmlspecialchars(strip_tags($this->name));
             $this->email = htmlspecialchars(strip_tags($this->email));
-            $this->id = htmlspecialchars(strip_tags($this->id));
 
             // Bind params
             $stmt->bindParam(":name", $this->name);
@@ -162,7 +166,7 @@
             }
 
             // Unique id for user
-            $stmt->bindParam(":id", $this->id);
+            $stmt->bindParam(":public_id", $this->public_id);
 
             // 
             if($stmt->execute()) {

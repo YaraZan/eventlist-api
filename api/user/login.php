@@ -48,7 +48,7 @@
             "iat" => $iat,
             "nbf" => $nbf,
             "data" => array(
-                "id" => $user->id,
+                "public_id" => $user->public_id,
                 "name" => $user->name,
                 "email" => $user->email,
                 "role" => $user->role

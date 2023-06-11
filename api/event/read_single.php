@@ -6,6 +6,9 @@
     include_once '../../config/Database.php';
     include_once '../../models/Event.php';
 
+    require '../../vendor/autoload.php';
+    use Ramsey\Uuid\Uuid;
+
     // Instantiate DB & connect
     $database = new Database();
     $db = $database->connect();
@@ -14,14 +17,14 @@
     $event = new Event($db);
 
     // Get ID
-    $event->id = isset($_GET['id']) ? $_GET['id'] : die();
+    $event->public_id = isset($_GET['public_id']) ? $_GET['public_id'] : die();
 
     // Get event
     $event->read_single();
 
     // Create array
     $event_item = array(
-        'id' => $event->id,
+        'public_id' => $event->public_id,
         'name' => $event->name,
         'descr' => $event->descr,
         'creator' => $event->creator,

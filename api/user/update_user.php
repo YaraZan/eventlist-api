@@ -46,7 +46,7 @@
             $user->name = $data->name;
             $user->email = $data->email;
             $user->password = $data->password;
-            $user->id = $data->id;
+            $user->public_id = $data->public_id;
 
             // Creating a user 
             if ($user->update()) {
@@ -56,7 +56,7 @@
                     "iat" => $iat,
                     "nbf" => $nbf,
                     "data" => array(
-                        "id" => $user->id,
+                        "public_id" => $user->public_id,
                         "name" => $user->name,
                         "email" => $user->email,
                         "role" => $user->role

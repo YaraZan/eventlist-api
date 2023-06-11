@@ -28,7 +28,7 @@
             extract($row);
 
             $org_item = array(
-                'id' => $id,
+                'public_id' => $public_id,
                 'creator' => $creator,
                 'name' => $name,
                 'email' => $email,

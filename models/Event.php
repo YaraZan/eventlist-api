@@ -6,6 +6,7 @@
 
         // Properties
         public $id;
+        public $public_id;
         public $name;
         public $descr;
         public $creator;
@@ -38,7 +39,7 @@
                         l.name as level_name,
                         u.name as creator_name,
                         o.name as organisation_name,
-                        e.id,
+                        e.public_id,
                         e.name,
                         e.descr,
                         e.creator,
@@ -61,8 +62,8 @@
                     LEFT JOIN ev_types t ON e.type = t.id
                     LEFT JOIN ev_kinds k ON e.kind = k.id
                     LEFT JOIN ev_levels l ON e.level = l.id
-                    LEFT JOIN users u ON e.creator = u.id
-                    LEFT JOIN organisations o ON e.organisation = o.id
+                    LEFT JOIN users u ON e.creator = u.public_id
+                    LEFT JOIN organisations o ON e.organisation = o.public_id
                     ORDER BY
                         e.created_at DESC';
 
@@ -83,7 +84,7 @@
             l.name as level_name,
             u.name as creator_name,
             o.name as organisation_name,
-            e.id,
+            e.public_id,
             e.name,
             e.descr,
             e.creator,
@@ -106,23 +107,24 @@
             LEFT JOIN ev_types t ON e.type = t.id
             LEFT JOIN ev_kinds k ON e.kind = k.id
             LEFT JOIN ev_levels l ON e.level = l.id
-            LEFT JOIN users u ON e.creator = u.id
-            LEFT JOIN organisations o ON e.organisation = o.id
+            LEFT JOIN users u ON e.creator = u.public_id
+            LEFT JOIN organisations o ON e.organisation = o.public_id
             WHERE 
-                e.id = ?
+                e.public_id = ?
                 LIMIT 0,1';
             
             // Prepare statement
             $stmt = $this->conn->prepare($query);
 
             // Bind ID
-            $stmt->bindParam(1, $this->id);
+            $stmt->bindParam(1, $this->public_id);
             
             // Execute query 
             $stmt->execute();
 
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
+            $this->public_id = $row['public_id'];
             $this->name = $row['name'];
             $this->descr = $row['descr'];
             $this->creator = $row['creator'];
@@ -147,6 +149,7 @@
             // Create query
             $query = 'INSERT INTO ' . $this->table . '
                 SET 
+                    public_id = :public_id,
                     name = :name,
                     descr = :descr,
                     creator = :creator,
@@ -167,6 +170,7 @@
             $stmt = $this->conn->prepare($query);
 
             // Clean data
+            $this->public_id = htmlspecialchars(strip_tags($this->public_id));
             $this->name = htmlspecialchars(strip_tags($this->name));
             $this->descr = htmlspecialchars(strip_tags($this->descr));
             $this->creator = htmlspecialchars(strip_tags($this->creator));
@@ -183,6 +187,7 @@
             $this->date_end = htmlspecialchars(strip_tags($this->date_end));
 
             // Bind data
+            $stmt->bindParam(':public_id', $this->public_id);
             $stmt->bindParam(':name', $this->name);
             $stmt->bindParam(':descr', $this->descr);
             $stmt->bindParam(':creator', $this->creator);
@@ -229,13 +234,13 @@
                     date_start = :date_start,
                     date_end = :date_end
                 WHERE
-                    id = :id';
+                    public_id = :public_id';
 
             // Prepare statement
             $stmt = $this->conn->prepare($query);
 
             // Clean data
-            $this->id = htmlspecialchars(strip_tags($this->id));
+            $this->public_id = htmlspecialchars(strip_tags($this->public_id));
             $this->name = htmlspecialchars(strip_tags($this->name));
             $this->descr = htmlspecialchars(strip_tags($this->descr));
             $this->creator = htmlspecialchars(strip_tags($this->creator));
@@ -252,7 +257,7 @@
             $this->date_end = htmlspecialchars(strip_tags($this->date_end));
 
             // Bind data
-            $stmt->bindParam(':id', $this->id);
+            $stmt->bindParam(':public_id', $this->public_id);
             $stmt->bindParam(':name', $this->name);
             $stmt->bindParam(':descr', $this->descr);
             $stmt->bindParam(':creator', $this->creator);
@@ -282,16 +287,16 @@
         // Delete Event
         public function delete() {
             // Create query
-            $query = 'DELETE FROM ' . $this-> table . ' WHERE id = :id';
+            $query = 'DELETE FROM ' . $this-> table . ' WHERE public_id = :public_id';
 
             // Prepare statement
             $stmt = $this->conn->prepare($query);
 
             // Clean data
-            $this->id = htmlspecialchars(strip_tags($this->id));
+            $this->public_id = htmlspecialchars(strip_tags($this->public_id));
 
             // Bind data
-            $stmt->bindParam(':id', $this->id);
+            $stmt->bindParam(':public_id', $this->public_id);
 
             // Execute query
             if($stmt->execute()) {
@@ -308,16 +313,16 @@
         // Get Creator name by id
         public function creator_name() {
             // Create query
-            $query = 'SELECT name FROM users WHERE id = :id';
+            $query = 'SELECT name FROM users WHERE public_id = :public_id';
         
             // Prepare statement
             $stmt = $this->conn->prepare($query);
         
             // Clean data
-            $this->id = htmlspecialchars(strip_tags($this->id));
+            $this->public_id = htmlspecialchars(strip_tags($this->public_id));
         
             // Bind data
-            $stmt->bindParam(':id', $this->id);
+            $stmt->bindParam(':public_id', $this->public_id);
         
             // Execute query
             if ($stmt->execute()) {
@@ -340,7 +345,7 @@
                         l.name as level_name,
                         u.name as creator_name,
                         o.name as organisation_name,
-                        e.id,
+                        e.public_id,
                         e.name,
                         e.descr,
                         e.creator,
@@ -363,8 +368,8 @@
                     LEFT JOIN ev_types t ON e.type = t.id
                     LEFT JOIN ev_kinds k ON e.kind = k.id
                     LEFT JOIN ev_levels l ON e.level = l.id
-                    LEFT JOIN users u ON e.creator = u.id
-                    LEFT JOIN organisations o ON e.organisation = o.id
+                    LEFT JOIN users u ON e.creator = u.public_id
+                    LEFT JOIN organisations o ON e.organisation = o.public_id
                     WHERE
                         e.organisation = ?
                     ORDER BY
